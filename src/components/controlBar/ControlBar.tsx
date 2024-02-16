@@ -6,6 +6,7 @@ import {InputFile} from "./InputFile";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {mapState, pathState, visitedState} from "../Maze";
 import {useState} from "react";
+import SpeedControl, {visualizingSpeedState} from "./SpeedControl";
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
@@ -16,12 +17,15 @@ export default function ControlBar() {
   const visited = useRecoilValue(visitedState)
   const path = useRecoilValue(pathState)
   const [isRunning, setIsRunning] = useState<boolean>(false)
+  const visualizingSpeed = useRecoilValue(visualizingSpeedState)
 
   function handleClearButtonOnClick() {
     setMap(map.map(row => row.map(cell => cell === 'V' || cell === 'P' ? '0' : cell)))
   }
 
   function handleRunningButtonOnClick() {
+    const baseVisualizingSpeed = 100 / visualizingSpeed
+
     if (isRunning || visited.length === 0)
       return
 
@@ -30,7 +34,7 @@ export default function ControlBar() {
     visited.forEach((visit, i) => {
       setTimeout(() => {
         setMap(prevMap => prevMap.map((row, k) => row.map((cell, l) => visit[0] === l && visit[1] === k && map[k][l] !== 'S' && map[k][l] !== 'E' ? 'V' : cell)))
-      }, 100 * i);
+      }, baseVisualizingSpeed * i);
     })
 
     if (path.length === 0) {
@@ -44,7 +48,7 @@ export default function ControlBar() {
 
         if (i === path.length - 1)
           setIsRunning(false)
-      }, 100 * i + 100 * visited.length);
+      }, baseVisualizingSpeed * i + baseVisualizingSpeed * visited.length);
     })
   }
 
@@ -57,6 +61,7 @@ export default function ControlBar() {
         <WidthInput/>
       </div>
 
+      <SpeedControl/>
       <InputFile id={'file'}/>
 
       <div className={'flex justify-between gap-5 mt-5 w-full'}>
