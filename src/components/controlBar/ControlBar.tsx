@@ -4,13 +4,14 @@ import HeightInput from "./heightWidth/HeightInput";
 import WidthInput from "./heightWidth/WidthInput";
 import {InputFile} from "./InputFile";
 import {useRecoilState, useRecoilValue} from "recoil";
-import {mapState, pathState, visitedState} from "../Maze";
+import {initialMapState, mapState, pathState, visitedState} from "../Maze";
 import {useState} from "react";
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 
 export default function ControlBar() {
   const [map, setMap] = useRecoilState(mapState)
+  const initialMap = useRecoilValue(initialMapState)
   const mazeName = useRecoilValue(mazeNameState)
   const visited = useRecoilValue(visitedState)
   const path = useRecoilValue(pathState)
@@ -20,6 +21,7 @@ export default function ControlBar() {
     if (isRunning || visited.length === 0)
       return
 
+    setMap(initialMap)
     setIsRunning(true)
     visited.forEach((visit, i) => {
       setTimeout(() => {
