@@ -1,14 +1,13 @@
 import {ChangeEvent, useRef, useState} from "react";
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import {useSetRecoilState} from "recoil";
-import {initialMapState, mapState, pathState, visitedState} from "../Maze";
+import {mapState, pathState, visitedState} from "../Maze";
 
 export function InputFile({id}: { id: string }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [fileName, setFileName] = useState<string>('Upload all exported data here')
 
   const setMap = useSetRecoilState(mapState)
-  const setInitialMap = useSetRecoilState(initialMapState)
   const setPath = useSetRecoilState(pathState)
   const setVisited = useSetRecoilState(visitedState)
 
@@ -48,7 +47,6 @@ export function InputFile({id}: { id: string }) {
 
 
     setMap(mapText)
-    setInitialMap(mapText)
     setPath(path)
     setVisited(visited)
   }

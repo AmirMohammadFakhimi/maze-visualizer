@@ -19,27 +19,20 @@ export const cellTypeState = atom<CellType>({
   default: 'wall'
 })
 
-const defaultMap: string[][] = [
-  ['S', '0', '0', '0', '0', '0', '0', '0', '1', '1'],
-  ['0', '0', '0', '0', '1', '0', '0', '0', '1', '0'],
-  ['1', '1', '0', '0', '0', '0', '0', '0', '1', '0'],
-  ['0', '0', '0', '0', '0', '0', '0', '0', '0', '1'],
-  ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-  ['0', '0', '0', '1', '0', '0', '0', '0', '0', '0'],
-  ['0', '0', '0', '0', '0', '0', '0', '1', '0', '1'],
-  ['0', '1', '0', '1', '0', '0', '0', '0', '0', '0'],
-  ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-  ['1', '0', '0', '0', '0', '0', '0', '0', '0', 'E']
-]
-
 export const mapState = atom<string[][]>({
   key: 'mapState',
-  default: defaultMap
-})
-
-export const initialMapState = atom<string[][]>({
-  key: 'initialMapState',
-  default: defaultMap
+  default: [
+    ['S', '0', '0', '0', '0', '0', '0', '0', '1', '1'],
+    ['0', '0', '0', '0', '1', '0', '0', '0', '1', '0'],
+    ['1', '1', '0', '0', '0', '0', '0', '0', '1', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '1'],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '1', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '1', '0', '1'],
+    ['0', '1', '0', '1', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+    ['1', '0', '0', '0', '0', '0', '0', '0', '0', 'E']
+  ]
 })
 
 export const pathState = atom<number[][]>({
@@ -131,24 +124,24 @@ export default function Maze() {
 
   function handleTileOnClick(i: number, j: number) {
     return () => {
+      let changedMap: string[][] = [[]]
+
       switch (cellType) {
         case 'free':
-          setMap(map.map((row, k) => row.map((cell, l) => i === k && j === l ? '0' : cell))
-          )
+          changedMap = map.map((row, k) => row.map((cell, l) => i === k && j === l ? '0' : cell))
           break
         case 'wall':
-          setMap(map.map((row, k) => row.map((cell, l) => i === k && j === l ? '1' : cell))
-          )
+          changedMap = map.map((row, k) => row.map((cell, l) => i === k && j === l ? '1' : cell))
           break
         case 'start':
-          setMap(map.map((row, k) => row.map((cell, l) => i === k && j === l ? 'S' : cell === 'S' ? '0' : cell))
-          )
+          changedMap = map.map((row, k) => row.map((cell, l) => i === k && j === l ? 'S' : cell === 'S' ? '0' : cell))
           break
         case 'end':
-          setMap(map.map((row, k) => row.map((cell, l) => i === k && j === l ? 'E' : cell === 'E' ? '0' : cell))
-          )
+          changedMap = map.map((row, k) => row.map((cell, l) => i === k && j === l ? 'E' : cell === 'E' ? '0' : cell))
           break
       }
+
+      setMap(changedMap)
     }
   }
 

@@ -4,24 +4,28 @@ import HeightInput from "./heightWidth/HeightInput";
 import WidthInput from "./heightWidth/WidthInput";
 import {InputFile} from "./InputFile";
 import {useRecoilState, useRecoilValue} from "recoil";
-import {initialMapState, mapState, pathState, visitedState} from "../Maze";
+import {mapState, pathState, visitedState} from "../Maze";
 import {useState} from "react";
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 
 export default function ControlBar() {
   const [map, setMap] = useRecoilState(mapState)
-  const initialMap = useRecoilValue(initialMapState)
   const mazeName = useRecoilValue(mazeNameState)
   const visited = useRecoilValue(visitedState)
   const path = useRecoilValue(pathState)
   const [isRunning, setIsRunning] = useState<boolean>(false)
 
+  function handleClearButtonOnClick() {
+    setMap(map.map(row => row.map(cell => cell === 'V' || cell === 'P' ? '0' : cell)))
+  }
+
   function handleRunningButtonOnClick() {
     if (isRunning || visited.length === 0)
       return
 
-    setMap(initialMap)
+    handleClearButtonOnClick()
     setIsRunning(true)
     visited.forEach((visit, i) => {
       setTimeout(() => {
@@ -63,12 +67,18 @@ export default function ControlBar() {
           Export Map
         </a>
         <button
-          className={'bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-600 text-md font-semibold w-1/2'}
-          onClick={handleRunningButtonOnClick}>
-          <PlayArrowRoundedIcon className={'mr-2'}/>
-          {isRunning ? 'Running ...' : 'Run'}
+          className={'bg-red-500 text-white p-2 rounded-md shadow-md hover:bg-red-600 text-md font-semibold w-1/2'}
+          onClick={handleClearButtonOnClick}>
+          <ClearRoundedIcon className={'mr-2'}/>
+          Clear Map
         </button>
       </div>
+      <button
+        className={'bg-green-500 text-white p-2 rounded-md shadow-md hover:bg-green-600 text-md font-semibold mt-5'}
+        onClick={handleRunningButtonOnClick}>
+        <PlayArrowRoundedIcon className={'mr-2'}/>
+        {isRunning ? 'Running ...' : 'Run'}
+      </button>
     </div>
   )
 }
